@@ -13,7 +13,7 @@ var DB *sql.DB
 // Connect initializes the database connection
 func Connect() {
 	var err error
-	connStr := "user=rommellagurin password=postgres host=localhost port=5432 dbname=san_juan_businesses sslmode=disable"
+	connStr := "user=JPSJ password=123456 host=localhost port=5432 dbname=company sslmode=disable"
 
 	DB, err = sql.Open("postgres", connStr)
 	if err != nil {

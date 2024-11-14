@@ -55,7 +55,7 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 	var pendingUserQueryResponse user_auth.PendingUser
-	pendingUserQuery := fmt.Sprintf("SELECT pending_id, username, password, pin, date_encoded FROM pending_users WHERE email = '%s'", user.Email)
+	pendingUserQuery := fmt.Sprintf("SET TIMEZONE TO 'Asia/Manila'; SELECT pending_id, username, password, pin, date_encoded FROM pending_users WHERE email = '%s'", user.Email)
 	pendingUserQueryErr := db.DB.QueryRow(pendingUserQuery).Scan(&pendingUserQueryResponse.PendingId, &pendingUserQueryResponse.Username, &pendingUserQueryResponse.Password, &pendingUserQueryResponse.PIN, &pendingUserQueryResponse.EncodedDate)
 	if pendingUserQueryErr != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -64,6 +64,7 @@ func Register(c *fiber.Ctx) error {
 			"data":        pendingUserQueryResponse,
 		})
 	}
+	fmt.Println("db encoded date: ", pendingUserQueryResponse.EncodedDate)
 	// Convert the string to time.Time
 	encodedTime, err := time_parser.ParseStringToTime(pendingUserQueryResponse.EncodedDate)
 	ckErr.ErrorChecker(err)
@@ -83,7 +84,7 @@ func Register(c *fiber.Ctx) error {
 	decryptedPin, _ := encrypt.Decrypt([]byte(hexDecodedPin), *encodedTime)
 	/*reflect.DeepEqual(decryptedUsername, []byte(user.Username))*/
 	if pendingUserQueryResponse.Username == user.Username && reflect.DeepEqual(decryptedPassword, []byte(user.Password)) && reflect.DeepEqual(decryptedPin, []byte(user.PIN)) {
-		location, err := time.LoadLocation("America/New_York")
+		location, err := time.LoadLocation("Asia/Manila")
 		if err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 				"error":       "System Error",
@@ -92,7 +93,7 @@ func Register(c *fiber.Ctx) error {
 		}
 
 		currentTimeInNY := time.Now().In(location)
-		formattedTime := time_parser.DateTimeFormater(currentTimeInNY)
+		formattedTime := time_parser.DateTimeFormatter(currentTimeInNY)
 		registeredTime, err := time_parser.ParseStringToTime(formattedTime)
 		ckErr.ErrorChecker(err)
 
@@ -100,6 +101,8 @@ func Register(c *fiber.Ctx) error {
 		// ckErr.ErrorChecker(err)
 		// user.NewUsername = hex.EncodeToString(updatedUsername)
 
+		fmt.Println("REGISTERED TIME: ", registeredTime)
+		fmt.Println("REGISTERED TIME: ", encodedTime)
 		updatedPassword, err := encrypt.Encrypt([]byte(user.NewPassword), *registeredTime)
 		ckErr.ErrorChecker(err)
 		user.NewPassword = hex.EncodeToString(updatedPassword)

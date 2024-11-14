@@ -75,7 +75,7 @@ func EncodeUser(c *fiber.Ctx) error {
 		})
 	}
 
-	location, err := time.LoadLocation("America/New_York")
+	location, err := time.LoadLocation("Asia/Manila")
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error":       "System Error",
@@ -84,7 +84,7 @@ func EncodeUser(c *fiber.Ctx) error {
 	}
 	// 38-f0b68772ab4ba406a2de29e078e9f4e0e78cb0a13c28856bcc4febc2776a34f6a51d7
 	currentTimeInNY := time.Now().In(location)
-	formattedTime := time_parser.DateTimeFormater(currentTimeInNY)
+	formattedTime := time_parser.DateTimeFormatter(currentTimeInNY)
 
 	user.EncodedDate = formattedTime
 	user.Status = "PENDING"
@@ -104,7 +104,7 @@ func EncodeUser(c *fiber.Ctx) error {
 	// user.PIN = strconv.Itoa(placement) + "-" + user.PIN[0:placement] + user.Password + user.PIN[placement:] + lengthToAppend
 	// 54bccbad5495688d355c463f075e25891c7932c071a9b7eca9d0f9e6ff58decedd04  65-VReMmRRmlADStuZ15
 	var response db_response.ProcedureResponse
-	fullQuery := fmt.Sprintf("CALL public.insert_pending_user(%d,%d,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','1','1','')", user.RoleID, user.CompanyID, user.FirstName, user.MiddleName, user.LastName, user.BirthDate, user.Sex, user.Username, user.Password, user.PIN, user.Email, user.Status, user.EncodedDate)
+	fullQuery := fmt.Sprintf("SET TIMEZONE TO 'Asia/Manila'; CALL public.insert_pending_user(%d,%d,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','1','1','')", user.RoleID, user.CompanyID, user.FirstName, user.MiddleName, user.LastName, user.BirthDate, user.Sex, user.Username, user.Password, user.PIN, user.Email, user.Status, user.EncodedDate)
 
 	fmt.Println("fullQuery: ", fullQuery)
 	dbErr := db.DB.QueryRow(fullQuery).Scan(&response.PendingId, &response.Status, &response.Message)
