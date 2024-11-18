@@ -1,6 +1,10 @@
 package userauth
 
-type RegisterUser struct {
+import (
+	"github.com/gofiber/fiber/v2"
+)
+
+type UserCredentials struct {
 	Email       string `json:"email"`
 	Username    string `json:"username"`
 	Password    string `json:"password"`
@@ -17,12 +21,28 @@ type PendingUser struct {
 	MiddleName  string `json:"middlename"`
 	LastName    string `json:"lastname"`
 	Sex         string `json:"sex"`
-	CompanyID   int    `json:"company_id"`
+	CompanyId   int    `json:"companyId"`
 	BirthDate   string `json:"birthdate"`
 	Username    string `json:"username"`
 	Password    string `json:"password"`
 	PIN         string `json:"pin"`
 	Email       string `json:"email"`
 	Status      string `json:"status"`
-	EncodedDate string `json:"encodedDate"`
+	DateEncoded string `json:"dateEncoded"`
+}
+
+func (u *UserCredentials) Validate(isLogin bool) *fiber.Map {
+	if u.Email == "" && u.Username == "" {
+		return &fiber.Map{
+			"error":       "Invalid input",
+			"actualError": "Incomplete request body",
+		}
+	}
+	if u.Password == "" {
+		return &fiber.Map{
+			"error":       "Invalid input",
+			"actualError": "Incomplete request body",
+		}
+	}
+	return nil
 }

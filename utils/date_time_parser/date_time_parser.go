@@ -7,8 +7,11 @@ import (
 )
 
 func ParseStringToTime(timeString string) (*time.Time, error) {
-	// Use RFC3339 to handle both "Z" (UTC) and timezone offsets
-	parsedTime, err := time.Parse(time.RFC3339, timeString)
+	fmt.Println("timeString: ", timeString)
+	layout := "2006-01-02T15:04:05+08:00"
+
+	// Convert the string to time.Time
+	parsedTime, err := time.Parse(layout, timeString)
 	if err != nil {
 		return nil, err
 	}
@@ -53,4 +56,13 @@ func ParseStringToTimeV2(timeString string) (*time.Time, error) {
 	}
 	fmt.Println("parsedTime: ", parsedTime)
 	return &parsedTime, nil
+}
+
+func GetTimeInLocation() (time.Time, error) {
+	location, err := time.LoadLocation("Asia/Manila")
+	if err != nil {
+		return time.Time{}, err
+	}
+	now := time.Now().In(location)
+	return now, nil
 }

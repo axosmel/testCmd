@@ -8,11 +8,14 @@ import (
 	"log"
 	"time"
 
+	"github.com/gofiber/template/html/v2"
+
 	"company/routes"
 
 	db "company/utils/connection"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
@@ -37,8 +40,8 @@ func main() {
 
 	// Example query
 	var greeting string
-	err := db.DB.QueryRow("SELECT 'Hello, World!'").Scan(&greeting)
-	ckErr.ErrorChecker(err)
+	result := db.DB.Raw("SELECT 'Hello, World!'").Scan(&greeting)
+	ckErr.ErrorChecker(result.Error)
 
 	encText, err := encrypt.Encrypt([]byte("Hello from GoLang"), time.Now())
 	ckErr.ErrorChecker(err)
@@ -56,9 +59,11 @@ func main() {
 	// ckErr.ErrorChecker(err)
 
 	// fmt.Println("GoDec:", string(dartDecText))
-	app := fiber.New()
-	app.Use(recover.New())
 
+	engine := html.New("./web/views", ".html")
+	app := fiber.New(fiber.Config{Views: engine})
+	app.Use(recover.New())
+	app.Use(cors.New())
 	// Initialize routes
 	routes.SetupRoutes(app)
 

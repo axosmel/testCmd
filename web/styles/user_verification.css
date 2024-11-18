@@ -1,0 +1,116 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif; /* Updated font */
+    background: url('https://i.ytimg.com/vi/erK6biLIoVg/maxresdefault.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-box {
+    position: relative;
+    width: 60%; /* Adjusted width for the form grid */
+    max-width: 800px; /* Added max-width for better responsiveness */
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.7); /* Decreased opacity */
+    border-radius: 10px;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
+}
+
+.login-box h2 {
+    margin: 0 0 30px;
+    padding: 0;
+    color: #333;
+    text-align: center;
+}
+
+/* Form Grid Styling */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    grid-gap: 20px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.separator {
+    width: 1px;
+    background-color: #333;
+    margin: 0 10px;
+    height: auto;
+}
+
+/* User Box Styling */
+.user-box {
+    position: relative;
+}
+
+.user-box input {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 30px;
+    border: none;
+    border-bottom: 1px solid #333;
+    outline: none;
+    background: transparent;
+}
+
+.user-box label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #333;
+    pointer-events: none;
+    transition: 0.5s;
+}
+
+.user-box input:focus ~ label,
+.user-box input:valid ~ label {
+    top: -20px;
+    left: 0;
+    color: #03a9f4;
+    font-size: 12px;
+}
+
+.submit-box {
+    text-align: center;
+}
+
+/* Button Styling */
+
+button {
+    display: inline-block;
+    padding: 12px 20px;
+    color: #fff;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    background: linear-gradient(90deg, #56CCF2, #2F80ED);
+    border: none;
+    border-radius: 10px; /* Reduced border radius for less rounded corners */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 20px;
+}
+
+button:hover {
+    background: linear-gradient(90deg, #2F80ED, #56CCF2);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+}
+

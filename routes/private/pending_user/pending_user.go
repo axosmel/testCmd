@@ -6,11 +6,16 @@ import (
 	db "company/utils/connection"
 	encrypt "company/utils/cypher"
 	ckErr "company/utils/error_handler"
+	"company/utils/mailer"
+	systemparameter "company/utils/system_parameter"
 	crypto_rand "crypto/rand"
 	"encoding/hex"
 	"fmt"
 	"math/big"
 	math_rand "math/rand"
+	"reflect"
+
+	// "reflect"
 	"strconv"
 	"time"
 
@@ -23,13 +28,8 @@ func generateDefaultUsername(firstname string, middlename string, lastname strin
 	time, err := time_parser.ParseStringToTime(timestamp)
 	ckErr.ErrorChecker(err)
 	defaultUsername := firstname[0:1] + middlename[0:1] + strconv.Itoa(time.Minute()) + lastname + strconv.Itoa(time.Hour())
-
-	fmt.Println("DEFAULT USERNAME: ", defaultUsername)
+	fmt.Println("defaultUsername: ", defaultUsername)
 	return defaultUsername
-	// encText, err := encrypt.Encrypt([]byte(defaultUsername), *time)
-	// ckErr.ErrorChecker(err)
-
-	// return hex.EncodeToString(encText)
 }
 
 func generateSecureRandomSixDigit() int {
@@ -40,28 +40,27 @@ func generateSecureRandomSixDigit() int {
 	return int(n.Int64()) + 100000
 }
 
-func generateDefaultPassword(lastname string, birthdate string, timestamp string) string {
+func generateDefaultPassword(lastname string, birthdate string, timestamp string) (string, string) {
 	defaultPassword := lastname + "@" + birthdate
 
-	fmt.Println("DEFAULT PASSWORD: ", defaultPassword)
 	time, err := time_parser.ParseStringToTime(timestamp)
 	ckErr.ErrorChecker(err)
 	encText, err := encrypt.Encrypt([]byte(defaultPassword), *time)
 	ckErr.ErrorChecker(err)
-
-	return hex.EncodeToString(encText)
+	fmt.Println("defaultPassword: ", defaultPassword)
+	return hex.EncodeToString(encText), defaultPassword
 }
 
-func generateDefaultPin(timestamp string) string {
+func generateDefaultPin(timestamp string) (string, int) {
 	defaultPin := generateSecureRandomSixDigit()
+	fmt.Println("defaultPin: ", defaultPin)
 
-	fmt.Println("DEFAULT PIN: ", defaultPin)
 	time, err := time_parser.ParseStringToTime(timestamp)
 	ckErr.ErrorChecker(err)
 	encText, err := encrypt.Encrypt([]byte(strconv.Itoa(defaultPin)), *time)
 	ckErr.ErrorChecker(err)
 
-	return hex.EncodeToString(encText)
+	return hex.EncodeToString(encText), defaultPin
 }
 
 func EncodeUser(c *fiber.Ctx) error {
@@ -69,7 +68,7 @@ func EncodeUser(c *fiber.Ctx) error {
 
 	// Parse the JSON body into the user struct
 	if err := c.BodyParser(&user); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"error":       "Invalid input",
 			"actualError": err,
 		})
@@ -77,49 +76,149 @@ func EncodeUser(c *fiber.Ctx) error {
 
 	location, err := time.LoadLocation("Asia/Manila")
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":       "System Error",
 			"actualError": err,
 		})
 	}
-	// 38-f0b68772ab4ba406a2de29e078e9f4e0e78cb0a13c28856bcc4febc2776a34f6a51d7
+
 	currentTimeInNY := time.Now().In(location)
 	formattedTime := time_parser.DateTimeFormatter(currentTimeInNY)
+	var txtFormatPassword string
+	var intFormatPin int
 
-	user.EncodedDate = formattedTime
+	user.DateEncoded = formattedTime
 	user.Status = "PENDING"
 	user.Username = generateDefaultUsername(user.FirstName, user.MiddleName, user.LastName, formattedTime)
-	user.Password = generateDefaultPassword(user.LastName, user.BirthDate, formattedTime)
-	user.PIN = generateDefaultPin(formattedTime)
-
-	// Generate a random string with a maximum length of 10
-	// placement := math_rand.Intn(len(user.PIN)) + 1
-	// randomString := generateRandomString(math_rand.Intn(15) + 1)
-	// user.Password = randomString
-	// txtLength := len(randomString)
-	// lengthToAppend := strconv.Itoa(txtLength)
-	// if txtLength < 10 {
-	// 	lengthToAppend = "0" + lengthToAppend
-	// }
-	// user.PIN = strconv.Itoa(placement) + "-" + user.PIN[0:placement] + user.Password + user.PIN[placement:] + lengthToAppend
-	// 54bccbad5495688d355c463f075e25891c7932c071a9b7eca9d0f9e6ff58decedd04  65-VReMmRRmlADStuZ15
+	user.Password, txtFormatPassword = generateDefaultPassword(user.LastName, user.BirthDate, formattedTime)
+	user.PIN, intFormatPin = generateDefaultPin(formattedTime)
 	var response db_response.ProcedureResponse
-	fullQuery := fmt.Sprintf("SET TIMEZONE TO 'Asia/Manila'; CALL public.insert_pending_user(%d,%d,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','1','1','')", user.RoleID, user.CompanyID, user.FirstName, user.MiddleName, user.LastName, user.BirthDate, user.Sex, user.Username, user.Password, user.PIN, user.Email, user.Status, user.EncodedDate)
+	fullQuery := fmt.Sprintf("CALL public.insert_pending_user(%d,%d,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','1','1','')", user.RoleID, user.CompanyId, user.FirstName, user.MiddleName, user.LastName, user.BirthDate, user.Sex, user.Username, user.Password, user.PIN, user.Email, user.Status, user.DateEncoded)
 
-	fmt.Println("fullQuery: ", fullQuery)
-	dbErr := db.DB.QueryRow(fullQuery).Scan(&response.PendingId, &response.Status, &response.Message)
-	if dbErr != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+	result := db.DB.Raw(fullQuery).Scan(&response)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":       "Database Error",
-			"actualError": dbErr.Error(),
+			"actualError": result.Error.Error(),
 			"data":        response,
 		})
+	}
+
+	if response.Status != 200 {
+		return c.Status(response.Status).JSON(response)
 	}
 	if response.PendingId.Valid {
 		response.Id = int(response.PendingId.Int64)
 	}
+
+	smtp := *systemparameter.GetSystemParameter("SMTP")
+	body := fmt.Sprintf("Dear %s,\n\nThis is the final step for your registration to the Company! The details below contains your temporary credentials, please don't let anyone know this details.\n\nUsername: %s\nPassword: %s\nPin: %d\n\nPlease use the credentials here http://127.0.0.1:3000/onesignal/user-verification", user.LastName, user.Username, txtFormatPassword, intFormatPin)
+	subject := "Account Verification"
+	to := user.Email
+	mailErr := mailer.SendEmail(smtp[0].ParameterValue, smtp[1].ParameterValue, smtp[2].ParameterValue, smtp[3].ParameterValue, subject, body, to)
+
+	if mailErr != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":       "Mailer error",
+			"actualError": err,
+			"data":        user,
+		})
+	}
+
 	return c.JSON(user)
 
+}
+
+func Register(c *fiber.Ctx) error {
+
+	var user user_auth.UserCredentials
+
+	// Parse the JSON body into the user struct
+	if err := c.BodyParser(&user); err != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+			"error":       "Invalid input",
+			"actualError": err,
+		})
+	}
+	var pendingUserQueryResponse user_auth.PendingUser
+	pendingUserQuery := fmt.Sprintf("SELECT pending_id, username, password, pin, date_encoded FROM pending_users WHERE email = '%s'", user.Email)
+
+	result := db.DB.Raw(pendingUserQuery).Scan(&pendingUserQueryResponse)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":       "Database Error",
+			"actualError": result.Error.Error(),
+			"data":        pendingUserQueryResponse,
+		})
+	}
+	// fmt.Println(pendingUserQueryResponse)
+	// return c.JSON(pendingUserQueryResponse)
+
+	// Convert the string to time.Time
+	encodedTime, err := time_parser.ParseStringToTime(pendingUserQueryResponse.DateEncoded)
+	ckErr.ErrorChecker(err)
+	fmt.Println("pendingUserQueryResponse.DateEncoded: ", pendingUserQueryResponse.DateEncoded)
+	fmt.Println("encodedTime: ", encodedTime)
+
+	hexDecodedPassword, err := hex.DecodeString(pendingUserQueryResponse.Password)
+	ckErr.ErrorChecker(err)
+	decryptedPassword, _ := encrypt.Decrypt([]byte(hexDecodedPassword), *encodedTime)
+
+	//
+	hexDecodedPin, err := hex.DecodeString(pendingUserQueryResponse.PIN)
+	ckErr.ErrorChecker(err)
+	decryptedPin, _ := encrypt.Decrypt([]byte(hexDecodedPin), *encodedTime)
+
+	if pendingUserQueryResponse.Username == user.Username && reflect.DeepEqual(decryptedPassword, []byte(user.Password)) && reflect.DeepEqual(decryptedPin, []byte(user.PIN)) {
+		location, err := time.LoadLocation("Asia/Manila")
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error":       "System Error",
+				"actualError": err,
+			})
+		}
+
+		currentTimeInNY := time.Now().In(location)
+		formattedTime := time_parser.DateTimeFormatter(currentTimeInNY)
+		registeredTime, err := time_parser.ParseStringToTime(formattedTime)
+		ckErr.ErrorChecker(err)
+
+		updatedPassword, err := encrypt.Encrypt([]byte(user.NewPassword), *registeredTime)
+		ckErr.ErrorChecker(err)
+		user.NewPassword = hex.EncodeToString(updatedPassword)
+
+		updatedPin, err := encrypt.Encrypt([]byte(user.NewPIN), *registeredTime)
+		ckErr.ErrorChecker(err)
+		user.NewPIN = hex.EncodeToString(updatedPin)
+
+		var registerVerifiedQueryResponse db_response.ProcedureResponse
+		registerVerifiedQuery := fmt.Sprintf("SELECT user_id, out_status status, message FROM backend_functions.register_user('%d', '%s', '%s', '%s', '%s')", pendingUserQueryResponse.PendingId, user.NewUsername, user.NewPassword, user.NewPIN, formattedTime)
+
+		fmt.Println(registerVerifiedQuery)
+		result := db.DB.Raw(registerVerifiedQuery).Scan(&registerVerifiedQueryResponse)
+		if result.Error != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error":       "Database Error",
+				"actualError": result.Error.Error(),
+				"data":        pendingUserQueryResponse,
+			})
+		}
+
+		fmt.Println("CHECK: ", registerVerifiedQueryResponse)
+		if registerVerifiedQueryResponse.Status != 200 {
+			fmt.Println("CHECK: ")
+			return c.Status(registerVerifiedQueryResponse.Status).JSON(registerVerifiedQueryResponse)
+		}
+
+		if registerVerifiedQueryResponse.UserId.Valid {
+			registerVerifiedQueryResponse.Id = int(registerVerifiedQueryResponse.UserId.Int64)
+		}
+		return c.JSON(fiber.Map{"userData": registerVerifiedQueryResponse, "initialLogin": "true"})
+	}
+
+	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+		"error": "Invalid Credentials",
+	})
 }
 
 func generateRandomString(length int) string {

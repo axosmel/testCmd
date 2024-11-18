@@ -1,0 +1,69 @@
+/* Modal base styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6); /* Darker background */
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 30px;
+  border-radius: 15px;
+  width: 70%;
+  max-width: 500px; /* Max width for smaller screens */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Deeper shadow */
+  text-align: center;
+  position: relative; /* For positioning the close button */
+}
+
+/* Success Modal styles */
+.modal-content.success {
+  border-left: 10px solid #4CAF50;
+}
+
+.modal-content.success h2 {
+  color: #4CAF50;
+}
+
+/* Error Modal styles */
+.modal-content.error {
+  border-left: 10px solid #f44336;
+}
+
+.modal-content.error h2 {
+  color: #f44336;
+}
+
+/* Close button */
+.close {
+  position: absolute; /* Positioning within the modal content */
+  top: 10px;
+  right: 15px;
+  color: #aaa;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+.modal-content {
+  animation: fadeIn 0.5s;
+}

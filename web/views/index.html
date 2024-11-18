@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiber HTML Rendering</title>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        try {
+            OneSignalDeferred.push(async function(OneSignal) {
+                await OneSignal.init({
+                appId: "ae3ba874-899f-43f4-a2ba-f6114a5cd224",
+                });
+
+                OneSignal.Notifications.requestPermission();
+
+                // var tags = await OneSignal.getTags()
+                // OneSignal.User.sendTags({"type":"TRANSACTION"});
+                function foregroundWillDisplayListener(event) {
+                    console.log(event["notification"]["title"]);
+                    console.log(event["notification"]["body"]);
+
+                    OneSignal.Slidedown.promptPush(event);
+                }
+                OneSignal.Notifications.addEventListener("foregroundWillDisplay", foregroundWillDisplayListener);
+                
+
+
+                function eventListener(event) {
+                    console.log(`${event}`);
+                }
+                OneSignal.Notifications.addEventListener("event", eventListener);
+
+
+                const subscriptionId = OneSignal.User.PushSubscription.id;
+                console.log("Subscription ID:", subscriptionId);
+                const userId = OneSignal.User.PushSubscription.id;
+                console.log("Subscription ID:", subscriptionId);
+            });
+        } catch (error) {
+            console.error("Error initializing OneSignal:", error);
+        }
+        
+
+    </script>
+</head>
+<body>
+    <h1>{{.Title}}</h1>
+    <p>{{.Message}}</p>
+</body>
+</html>
