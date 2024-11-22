@@ -69,9 +69,31 @@ func healthCheck(c *fiber.Ctx) error {
 func userEndpoints(userPath fiber.Router) {
 	// GROUP OF PATHS
 	updatePath := userPath.Group("/update")
+	verificationPath := userPath.Group("/verification")
 
 	// ENDPOINTS
 	updatePath.Post("/profile", updateuser.UpdateProfile)
+
+	userVerificationSetup(verificationPath)
+
+	verificationPath.Get("/verify", func(c *fiber.Ctx) error {
+		return c.Render("user_verification", fiber.Map{"Title": "Welcome to Fiber", "Message": "Hello, Fiber with HTML!"})
+	})
+
+}
+
+func userVerificationSetup(verificationPath fiber.Router) {
+	verificationPath.Get("/styles/user-verification.css", func(c *fiber.Ctx) error {
+		return c.SendFile("./web/styles/user_verification.css")
+	})
+
+	verificationPath.Get("/styles/modal.css", func(c *fiber.Ctx) error {
+		return c.SendFile("./web/styles/modal.css")
+	})
+
+	verificationPath.Get("/modal.js", func(c *fiber.Ctx) error {
+		return c.SendFile("./web/js/modal.js")
+	})
 }
 
 // USER ENDPOINTS
@@ -105,21 +127,6 @@ func oneSignalEndpoints(oneSignalPath fiber.Router) {
 	oneSignalPath.Get("/subscribe-onesignal", func(c *fiber.Ctx) error {
 		return c.Render("index", fiber.Map{"Title": "Welcome to Fiber", "Message": "Hello, Fiber with HTML!"})
 	})
-	oneSignalPath.Get("/user-verification", func(c *fiber.Ctx) error {
-		return c.Render("user_verification", fiber.Map{"Title": "Welcome to Fiber", "Message": "Hello, Fiber with HTML!"})
-	})
-
-	oneSignalPath.Get("/styles/user-verification.css", func(c *fiber.Ctx) error {
-		return c.SendFile("./web/styles/user_verification.css")
-	})
-
-	oneSignalPath.Get("/styles/modal.css", func(c *fiber.Ctx) error {
-		return c.SendFile("./web/styles/modal.css")
-	})
-
-	oneSignalPath.Get("/modal.js", func(c *fiber.Ctx) error {
-		return c.SendFile("./web/js/modal.js")
-	})
 
 	oneSignalPath.Get("/OneSignalSDKWorker.js", func(c *fiber.Ctx) error {
 		c.Set("Content-Type", "application/javascript")
@@ -139,22 +146,5 @@ func oneSignalEndpoints(oneSignalPath fiber.Router) {
 	oneSignalPath.Post("/notification-dismissed", func(c *fiber.Ctx) error {
 		fmt.Println("Notification dismissed")
 		return c.JSON("Notification dismissed")
-	})
-
-	oneSignalPath.Get("/subscribe", func(c *fiber.Ctx) error {
-
-		// var pendingUserQueryResponse user_auth_model.PendingUser
-		// pendingUserQuery := fmt.Sprintf("SET TIMEZONE TO 'Asia/Manila'; SELECT pending_id, username, password, pin, date_encoded FROM pending_users WHERE email = 'rlagurins@gmail.com'")
-		// pendingUserQueryErr := db.DB.QueryRow(pendingUserQuery).Scan(&pendingUserQueryResponse.PendingId, &pendingUserQueryResponse.Username, &pendingUserQueryResponse.Password, &pendingUserQueryResponse.PIN, &pendingUserQueryResponse.EncodedDate)
-		// if pendingUserQueryErr != nil {
-		// 	return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-		// 		"error":       "Database Error",
-		// 		"actualError": pendingUserQueryErr.Error(),
-		// 		"data":        pendingUserQueryResponse,
-		// 		"time":        time.Now(),
-		// 	})
-		// }
-		// return c.JSON(fiber.Map{"timestamp": time.Now()})
-		return nil
 	})
 }

@@ -112,7 +112,9 @@ func EncodeUser(c *fiber.Ctx) error {
 	}
 
 	smtp := *systemparameter.GetSystemParameter("SMTP")
-	body := fmt.Sprintf("Dear %s,\n\nThis is the final step for your registration to the Company! The details below contains your temporary credentials, please don't let anyone know this details.\n\nUsername: %s\nPassword: %s\nPin: %d\n\nPlease use the credentials here http://127.0.0.1:3000/onesignal/user-verification", user.LastName, user.Username, txtFormatPassword, intFormatPin)
+	service := *systemparameter.GetSystemParameter("SERVICE")
+	url := fmt.Sprintf("%s/verification/verify", service[0].ParameterValue)
+	body := fmt.Sprintf("Dear %s,\n\nThis is the final step for your registration to the Company! The details below contains your temporary credentials, please don't let anyone know this details.\n\nUsername: %s\nPassword: %s\nPin: %d\n\nPlease use the credentials here %s", user.LastName, user.Username, txtFormatPassword, intFormatPin, url)
 	subject := "Account Verification"
 	to := user.Email
 	mailErr := mailer.SendEmail(smtp[0].ParameterValue, smtp[1].ParameterValue, smtp[2].ParameterValue, smtp[3].ParameterValue, subject, body, to)
@@ -151,10 +153,8 @@ func Register(c *fiber.Ctx) error {
 			"data":        pendingUserQueryResponse,
 		})
 	}
-	// fmt.Println(pendingUserQueryResponse)
-	// return c.JSON(pendingUserQueryResponse)
+	fmt.Println("pendingUserQueryResponse.DateEncoded: ", pendingUserQueryResponse.DateEncoded)
 
-	// Convert the string to time.Time
 	encodedTime, err := time_parser.ParseStringToTime(pendingUserQueryResponse.DateEncoded)
 	ckErr.ErrorChecker(err)
 	fmt.Println("pendingUserQueryResponse.DateEncoded: ", pendingUserQueryResponse.DateEncoded)
