@@ -3,6 +3,7 @@ package routes
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 
@@ -11,6 +12,7 @@ import (
 	updateuser "company/routes/private/update_user"
 	systemparameters "company/routes/public/system_parameters"
 	user_auth_route "company/routes/public/user_auth"
+	time_parser "company/utils/date_time_parser"
 )
 
 // SetupRoutes initializes the routes
@@ -22,6 +24,9 @@ func SetupRoutes(app *fiber.App) {
 	userPath := app.Group("/user")
 	systemParamsPath := app.Group("/system-params")
 	checkInPath := app.Group("/customer")
+
+	// HEALTH CHECK SETUP
+	healthCheckEndpoints(app)
 
 	// ENDPOINT CALLS
 	authEndpoints(authPath)
@@ -36,6 +41,28 @@ func SetupRoutes(app *fiber.App) {
 
 	checkInEndpoints(checkInPath)
 
+}
+
+func healthCheckEndpoints(app *fiber.App) {
+	app.Get("/", healthCheck)
+	app.Get("/health-check", healthCheck)
+	app.Get("/health_check", healthCheck)
+	app.Get("/healthcheck", healthCheck)
+	app.Get("/health", healthCheck)
+	app.Get("/check", healthCheck)
+}
+
+func healthCheck(c *fiber.Ctx) error {
+	location, err := time.LoadLocation("Asia/Manila")
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":       "System Error",
+			"actualError": err,
+		})
+	}
+	currentTimeInNY := time.Now().In(location)
+	formattedTime := time_parser.DateTimeFormatter(currentTimeInNY)
+	return c.JSON(fiber.Map{"build": "v1.0.0", "timestamp": formattedTime})
 }
 
 // USER ENDPOINTS

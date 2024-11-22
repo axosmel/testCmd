@@ -38,33 +38,33 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
   event.preventDefault();
     console.log("TRIGGERED")
     // Dummy validation logic
-    var email = "m.rommellagurin@gmail.com";
-    var username = "RM18LAGURIN15";
-    var password = "LAGURIN@1994-10-22";
-    var pin = "780012";
-    var new_username = "lemem199xx";
-    var new_password = "memel";
-    var new_pin = "112233";
+    var email = document.getElementById("email").value;
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+    var pin = document.getElementById("pin").value;
+    var new_username = document.getElementById("new_username").value;
+    var new_password = document.getElementById("new_password").value;
+    var new_pin = document.getElementById("new_pin").value;
     // window.location.href = "https://www.google.com"
 
     sendData(email, username, password, pin, new_username, new_password, new_pin);
 });
 
 function clearData(){
-  document.getElementById("email").value = "m.rommellagurin@gmail.com";
-  document.getElementById("username").value = "RM18LAGURIN15";
-  document.getElementById("password").value = "LAGURIN@1994-10-22";
-  document.getElementById("pin").value = "780012";
-  document.getElementById("new_username").value = "lemem199xx";
-  document.getElementById("new_password").value = "memel";
-  document.getElementById("new_pin").value = "112233";
+  document.getElementById("email").value = "";
+  document.getElementById("username").value = "";
+  document.getElementById("password").value = "";
+  document.getElementById("pin").value = "";
+  document.getElementById("new_username").value = "";
+  document.getElementById("new_password").value = "";
+  document.getElementById("new_pin").value = "";
 }
 
 
 
 function sendData(email, username, password, pin, new_username, new_password, new_pin) {
   // The URL of the API endpoint
-  const apiUrl = 'http://127.0.0.1:3000/pending/signUp';
+  const apiUrl = 'https://developing-maria-sanjuan-company-9e050470.koyeb.app/pending/signUp';
 
   // The data you want to send in the request body
   const requestData = {
@@ -95,7 +95,7 @@ function sendData(email, username, password, pin, new_username, new_password, ne
       return response.json(); // Parse the JSON from the response
     })
     .then(data => {
-      // clearData();
+      clearData();
       console.log(data); // Handle the success response data
       if (data["message"] != "SUCCESSFULLY REGISTERED USER"){
         showSuccessModal();
