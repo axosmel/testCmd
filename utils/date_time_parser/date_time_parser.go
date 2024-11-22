@@ -6,9 +6,11 @@ import (
 	"time"
 )
 
+const myFormat = "2006-01-02T15:04:05+08:00"
+
 func ParseStringToTime(timeString string) (*time.Time, error) {
 	fmt.Println("timeString: ", timeString)
-	layout := "2006-01-02T15:04:05+08:00"
+	layout := myFormat
 
 	// Convert the string to time.Time
 	parsedTime, err := time.Parse(layout, timeString)
@@ -19,7 +21,7 @@ func ParseStringToTime(timeString string) (*time.Time, error) {
 }
 
 func DateTimeFormatter(timestamp time.Time) string {
-	return timestamp.Format("2006-01-02T15:04:05+08:00")
+	return timestamp.Format(myFormat)
 }
 
 func ParseStringToTimeV2(timeString string) (*time.Time, error) {
@@ -41,14 +43,14 @@ func ParseStringToTimeV2(timeString string) (*time.Time, error) {
 	// Convert the UTC time to the desired timezone
 	localTime := utcTime.In(loc)
 
-	layout := "2006-01-02T15:04:05+08:00"
+	layout := myFormat
 
 	// // Convert the string to time.Time
 	// parsedTime, err := time.Parse(layout, timeString)
 	if err != nil {
 		return nil, err
 	}
-	formattedTime := localTime.Format("2006-01-02T15:04:05+08:00")
+	formattedTime := localTime.Format(myFormat)
 
 	parsedTime, err := time.Parse(layout, formattedTime)
 	if err != nil {

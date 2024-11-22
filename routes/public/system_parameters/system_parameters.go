@@ -9,6 +9,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+const errorMessage = "Database Error"
+
 func GetCompanies(c *fiber.Ctx) error {
 	var (
 		companies []common.Company
@@ -19,7 +21,7 @@ func GetCompanies(c *fiber.Ctx) error {
 	result := db.DB.Raw(companyQuery).Scan(&companies)
 	if result.Error != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error":       "Database Error",
+			"error":       errorMessage,
 			"actualError": result.Error.Error(),
 			"time":        time.Now(),
 		})
@@ -38,7 +40,7 @@ func GetRoles(c *fiber.Ctx) error {
 	result := db.DB.Raw(companyQuery).Scan(&roles)
 	if result.Error != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error":       "Database Error",
+			"error":       errorMessage,
 			"actualError": result.Error.Error(),
 			"time":        time.Now(),
 		})
@@ -57,7 +59,7 @@ func GetFeatures(c *fiber.Ctx) error {
 	result := db.DB.Raw(companyQuery).Scan(&features)
 	if result.Error != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error":       "Database Error",
+			"error":       errorMessage,
 			"actualError": result.Error.Error(),
 			"time":        time.Now(),
 		})
