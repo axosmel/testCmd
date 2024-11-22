@@ -40,8 +40,10 @@ package connection
 import (
 	"fmt"
 	"log"
+	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -50,8 +52,24 @@ var DB *gorm.DB
 
 // Connect initializes the database connection
 func Connect() {
-	// dsn := "user=a password=postgres host=a port=1234 dbname=s sslmode=disable"
-	connStr := "user=rommel password=boslagu host=postgresql-rommel.alwaysdata.net port=5432 dbname=rommel_company sslmode=disable TimeZone=Asia/Manila"
+
+	envLoadingErr := godotenv.Load()
+	if envLoadingErr != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	dbHost := os.Getenv("DATABASE_HOST")
+	dbUser := os.Getenv("DATABASE_USER")
+	dbPass := os.Getenv("DATABASE_PASSWORD")
+	dbName := os.Getenv("DATABASE_NAME")
+
+	connStr := fmt.Sprintf(
+		"user=%s password=%s host=%s port=5432 dbname=%s TimeZone=Asia/Manila",
+		dbUser,
+		dbPass,
+		dbHost,
+		dbName,
+	)
 	var err error
 	// Get the current time
 	now := time.Now()              // Get the timezone name and offset
