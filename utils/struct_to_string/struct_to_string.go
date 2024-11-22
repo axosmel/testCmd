@@ -31,10 +31,12 @@ func structConverter(v reflect.Value, t reflect.Type) (string, string) {
 	var values string
 	for i := 0; i < v.NumField(); i++ {
 		field := t.Field(i).Name
-		value := v.Field(i).Interface()
-		if value != "" && value != nil && value != 0 {
-			fields += fmt.Sprintf("%s, ", owned_strings.TitleToSnakeCase(field))
-			values += fmt.Sprintf("'%v', ", value)
+		if field != "AddressId" && field != "ContactId" {
+			value := v.Field(i).Interface()
+			if value != "" && value != nil && value != 0 {
+				fields += fmt.Sprintf("%s, ", owned_strings.TitleToSnakeCase(field))
+				values += fmt.Sprintf("'%v', ", value)
+			}
 		}
 	}
 	fields = fmt.Sprintf("(%s),", fields)

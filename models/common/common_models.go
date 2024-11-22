@@ -26,44 +26,45 @@ type UserTable struct {
 }
 
 type User struct {
-	PendingId      int64     `json:"pendingId,omitempty"`
-	UserId         int64     `json:"userId,omitempty"`
-	RoleID         int64     `json:"roleId,omitempty"`
-	Firstname      string    `json:"firstname,omitempty"`
-	Middlename     string    `json:"middlename,omitempty"`
-	Lastname       string    `json:"lastname,omitempty"`
-	Sex            string    `json:"sex,omitempty"`
-	CompanyID      int64     `json:"company_id,omitempty"`
-	Birthdate      string    `json:"birthdate,omitempty"`
-	Email          string    `json:"email,omitempty"`
-	Status         string    `json:"status,omitempty"`
-	RegisteredDate string    `json:"registeredDate,omitempty"`
-	EncodedDate    string    `json:"encodedDate,omitempty"`
-	ContactsList   []Contact `json:"contactsList,omitempty"`
-	AddresseList   []Address `json:"addresseList,omitempty"`
-	UserRole       Role      `json:"userRole,omitempty"`
-	UserCompany    Company   `json:"userCompany,omitempty"`
-	UserAccess     Access    `json:"userAccess,omitempty"`
+	PendingId      int64             `json:"pendingId,omitempty"`
+	UserId         int64             `json:"userId,omitempty"`
+	UserDetailsId  int64             `json:"userDetailsId,omitempty"`
+	RoleID         int64             `json:"roleId,omitempty"`
+	Firstname      string            `json:"firstname,omitempty"`
+	Middlename     string            `json:"middlename,omitempty"`
+	Lastname       string            `json:"lastname,omitempty"`
+	Sex            string            `json:"sex,omitempty"`
+	CompanyID      int64             `json:"company_id,omitempty"`
+	Birthdate      string            `json:"birthdate,omitempty"`
+	Email          string            `json:"email,omitempty"`
+	Status         string            `json:"status,omitempty"`
+	RegisteredDate string            `json:"registeredDate,omitempty"`
+	EncodedDate    string            `json:"encodedDate,omitempty"`
+	ContactsList   []Contact         `json:"contactsList,omitempty"`
+	AddresseList   []Address         `json:"addresseList,omitempty"`
+	UserRole       Role              `json:"userRole,omitempty"`
+	UserCompany    CustomizedCompany `json:"userCompany,omitempty"`
+	UserAccess     Access            `json:"userAccess,omitempty"`
 }
 
 type Contact struct {
-	ContactId      int64  `json:"contactId,omitempty"`
 	UserDetailsId  int64  `json:"userDetailsId,omitempty"`
+	ContactId      int64  `json:"contactId,omitempty"`
 	ContactType    string `json:"contactType,omitempty"`
 	ContactDetails string `json:"contactDetails,omitempty"`
 	Prioritization string `json:"prioritization,omitempty"`
 }
 
 type Address struct {
-	AddressId     int64  `json:"addressId,omitempty"`
 	UserDetailsId int64  `json:"userDetailsId,omitempty"`
+	AddressId     int64  `json:"addressId,omitempty"`
 	HouseNo       string `json:"houseNo,omitempty"`
 	Purok         string `json:"purok,omitempty"`
-	AddrStreet    string `json:"street,omitempty"`
+	Street        string `json:"street,omitempty"`
 	Subdivision   string `json:"subdivision,omitempty"`
-	AddrBrgy      string `json:"brgy,omitempty"`
-	AddrCity      string `json:"city,omitempty"`
-	AddrProvince  string `json:"province,omitempty"`
+	Brgy          string `json:"brgy,omitempty"`
+	City          string `json:"city,omitempty"`
+	Province      string `json:"province,omitempty"`
 }
 
 type Role struct {
@@ -81,6 +82,19 @@ type Company struct {
 	Brgy        string `json:"brgy,omitempty"`
 	City        string `json:"city,omitempty"`
 	Province    string `json:"province,omitempty"`
+	Longitude   string `json:"longitude,omitempty"`
+	Latitude    string `json:"latitude,omitempty"`
+}
+
+type CustomizedCompany struct {
+	CompanyId   int64  `json:"companyId,omitempty"`
+	Title       string `json:"title,omitempty"`
+	Description string `json:"description,omitempty"`
+	Business    string `json:"business,omitempty"`
+	St          string `json:"st,omitempty"`
+	Barangay    string `json:"barangay,omitempty"`
+	Cty         string `json:"cty,omitempty"`
+	Prvnce      string `json:"prvnce,omitempty"`
 	Longitude   string `json:"longitude,omitempty"`
 	Latitude    string `json:"latitude,omitempty"`
 }
@@ -129,9 +143,6 @@ func MapToStruct(data map[string]interface{}, result interface{}) error {
 				fieldVal := val.FieldByName(structField.Name)
 				if fieldVal.IsValid() && fieldVal.CanSet() {
 					fieldValue := reflect.ValueOf(value)
-					if tagName == "userId" && owned_strings.SnakeToCamel(key) == "userId" {
-						fmt.Println("KIND: ", fieldVal.Kind(), " -- ", fieldValue.Kind())
-					}
 					if fieldVal.Kind() == fieldValue.Kind() {
 						fieldVal.Set(fieldValue)
 					} else if fieldVal.Kind() == reflect.Float64 && fieldValue.Kind() == reflect.Float64 {

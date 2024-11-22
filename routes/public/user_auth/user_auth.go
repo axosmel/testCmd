@@ -72,7 +72,7 @@ func SignIn(c *fiber.Ctx) error {
 			userAddress      []common.Address
 			userMatrix       common.Access
 			userRoles        common.Role
-			userCompany      common.Company
+			userCompany      common.CustomizedCompany
 			userLoginData    common.User
 			actualDbResponse []map[string]interface{}
 		)
