@@ -143,7 +143,7 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 	var pendingUserQueryResponse user_auth.PendingUser
-	pendingUserQuery := fmt.Sprintf("SELECT pending_id, username, password, pin, date_encoded::TEXT FROM pending_users WHERE email = '%s'", user.Email)
+	pendingUserQuery := fmt.Sprintf("SELECT pending_id, username, password, pin, date_encoded FROM pending_users WHERE email = '%s'", user.Email)
 
 	result := db.DB.Raw(pendingUserQuery).Scan(&pendingUserQueryResponse)
 	if result.Error != nil {
