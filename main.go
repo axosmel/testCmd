@@ -40,7 +40,7 @@ func main() {
 
 	// Example query
 	var greeting string
-	result := db.DB.Raw("SELECT 'Hello, World!'").Scan(&greeting)
+	result := db.DB.Raw("SET TIMEZONE = 'Asia/Manila'").Scan(&greeting)
 	ckErr.ErrorChecker(result.Error)
 
 	encText, err := encrypt.Encrypt([]byte("Hello from GoLang"), time.Now())
