@@ -6,6 +6,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
+	checkin "company/routes/private/check_in"
 	pending_user "company/routes/private/pending_user"
 	updateuser "company/routes/private/update_user"
 	systemparameters "company/routes/public/system_parameters"
@@ -20,6 +21,7 @@ func SetupRoutes(app *fiber.App) {
 	oneSignalPath := app.Group("/onesignal")
 	userPath := app.Group("/user")
 	systemParamsPath := app.Group("/system-params")
+	checkInPath := app.Group("/customer")
 
 	// ENDPOINT CALLS
 	authEndpoints(authPath)
@@ -31,6 +33,8 @@ func SetupRoutes(app *fiber.App) {
 	userEndpoints(userPath)
 
 	systemParamsEndpoints(systemParamsPath)
+
+	checkInEndpoints(checkInPath)
 
 }
 
@@ -60,6 +64,13 @@ func authEndpoints(authPath fiber.Router) {
 func pendingEndpoints(pendingPath fiber.Router) {
 	pendingPath.Post("/encode", pending_user.EncodeUser)
 	pendingPath.Post("/signUp", pending_user.Register)
+}
+
+// PENDING ENDPOINTS
+func checkInEndpoints(pendingPath fiber.Router) {
+	pendingPath.Post("/check-in", checkin.CheckIn)
+	pendingPath.Post("/check-out", checkin.CheckOut)
+	pendingPath.Get("/current-guests", checkin.GetCurrentGuests)
 }
 
 // ONESIGNAL ENDPOINTS

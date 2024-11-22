@@ -1,0 +1,298 @@
+{
+	"info": {
+		"_postman_id": "05d699eb-b6da-4a9b-a700-fe94bc6b422d",
+		"name": "Company",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36195860"
+	},
+	"item": [
+		{
+			"name": "USER AUTH",
+			"item": [
+				{
+					"name": "ENCODE USER",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roleId\": 1,\n    \"firstname\": \"ROMMEL\",\n    \"middlename\": \"MANGUNDAYAO\",\n    \"lastname\": \"LAGURIN\",\n    \"sex\": \"MALE\",\n    \"companyId\": 1,\n    \"birthdate\": \"1994-10-22\",\n    \"email\": \"m.rommellagurin@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/pending/encode",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"pending",
+								"encode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VERIFY USER",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"rmlagurisn@gmail.com\",\n    \"username\": \"LM7LAGURIN14\",\n    \"password\": \"LAGURIN@1994-10-22\",\n    \"pin\": \"428360\",\n    \"newUsername\": \"mel\",\n    \"newPassword\": \"myPassword\",\n    \"newPIN\": \"102294\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/pending/signUp",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"pending",
+								"signUp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SIGN IN",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"lemem199x\",\n    \"password\":\"memel\",\n    \"email\":\"112233\"\n}\n\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/auth/signIn",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"signIn"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE PROFILE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"contactsList\": [\n        {\n            \"userDetailsId\": 18,\n            \"contactType\": \"mobile\",\n            \"contactDetails\": \"01823041213\",\n            \"prioritization\": \"top\"\n        },\n        {\n            \"userDetailsId\": 18,\n            \"contactType\": \"mobile\",\n            \"contactDetails\": \"01823041213\",\n            \"prioritization\": \"secondary\"\n        }\n    ],\n    \"addresseList\": [\n        {\n            \"userDetailsId\": 18,\n            \"houseNo\": \"1\",\n            \"purok\": \"1\",\n            \"street\": \"asd\",\n            \"subdivision\": \"gasddas\",\n            \"brgy\": \"hagsdfawad afwcas\",\n            \"city\": \"asfas asf\",\n            \"province\": \"gasda\"\n        },\n        {\n            \"userDetailsId\": 18,\n            \"houseNo\": \"23\",\n            \"purok\": \"1\",\n            \"street\": \"asd42\",\n            \"subdivision\": \"asf asfdas\",\n            \"brgy\": \"sadad\",\n            \"city\": \"fasfa\",\n            \"province\": \"asd asd\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/user/update/profile",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"update",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MOCKUPS",
+			"item": [
+				{
+					"name": "LOGIN RESPONSE",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"bio\": {\n        \"firstname\": \"\",\n        \"middlename\": \"\",\n        \"lastname\": \"\",\n        \"sex\": \"\",\n        \"birthdate\": \"\"\n    },\n    \"company\": {\n        \"title\": \"\",\n        \"description\": \"\",\n        \"business\": \"\",\n        \"street\": \"\",\n        \"brgy\": \"\",\n        \"city\": \"\",\n        \"province\": \"\"\n    },\n    \"role\": {\n        \"title\": \"\",\n        \"description\": \"\",\n        \"access\": [\n            {\n                \"description\": \"\",\n                \"feature\": \"DASHBOARD\",\n                \"acessType\": [\n                    \"ADD\",\n                    \"EDIT\",\n                    \"VIEW\",\n                    \"DELETE\"\n                ]\n            },\n            {\n                \"description\": \"\",\n                \"feature\": \"USER MANAGEMENT\",\n                \"acessType\": [\n                    \"ADD\",\n                    \"EDIT\",\n                    \"VIEW\",\n                    \"DELETE\"\n                ]\n            }\n        ]\n    },\n    \"address\": [\n        {\n            \"houseNo\": \"10\",\n            \"purok\": \"1\",\n            \"street\": \"st\",\n            \"subdivision\": \"st\",\n            \"brgy\": \"Santiago 1\",\n            \"city\": \"SPC\",\n            \"province\": \"Laguna\"\n        },\n        {\n            \"houseNo\": \"10\",\n            \"purok\": \"1\",\n            \"street\": \"st\",\n            \"subdivision\": \"st\",\n            \"brgy\": \"Santiago 1\",\n            \"city\": \"SPC\",\n            \"province\": \"Laguna\"\n        },\n        {\n            \"houseNo\": \"10\",\n            \"purok\": \"1\",\n            \"street\": \"st\",\n            \"subdivision\": \"st\",\n            \"brgy\": \"Santiago 1\",\n            \"city\": \"SPC\",\n            \"province\": \"Laguna\"\n        }\n    ],\n    \"contact\": [\n        {\n            \"contactType\": \"10\",\n            \"contactDetails\": \"1\",\n            \"prioritization\": \"st\"\n        },\n        {\n            \"contactType\": \"10\",\n            \"contactDetails\": \"1\",\n            \"prioritization\": \"st\"\n        },\n        {\n            \"contactType\": \"10\",\n            \"contactDetails\": \"1\",\n            \"prioritization\": \"st\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SYSTEM PARAMETERS",
+			"item": [
+				{
+					"name": "GET FEATURES",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/system-params/features",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"system-params",
+								"features"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ROLES",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/system-params/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"system-params",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET COMPANIES",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/system-params/companies",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"system-params",
+								"companies"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CUSTOMER",
+			"item": [
+				{
+					"name": "CHECKOUT",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"companyId\": 1,\n    \"checkinId\": 1,\n    \"visitorFirstname\": \"gafddsas\",\n    \"visitorMiddlename\": \"agfsd\",\n    \"visitorLastname\": \"afsd\",\n    \"city\": \"agads asfd\",\n    \"province\": \"ghrae\",\n    \"adultMaleCount\": 2,\n    \"adultFemaleCount\": 3,\n    \"kidsMaleCount\": 5,\n    \"kidsFemaleCount\": 2,\n    \"visitType\": \"overnight\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/customer/check-out",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"customer",
+								"check-out"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CHECKIN",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"companyId\": 1,\n    \"visitorFirstname\": \"gafddsas\",\n    \"visitorMiddlename\": \"agfsd\",\n    \"visitorLastname\": \"afsd\",\n    \"city\": \"agads asfd\",\n    \"province\": \"ghrae\",\n    \"adultMaleCount\": 2,\n    \"adultFemaleCount\": 3,\n    \"kidsMaleCount\": 5,\n    \"kidsFemaleCount\": 2,\n    \"visitType\": \"overnight\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/customer/check-in",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"customer",
+								"check-in"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET CURRENT GUESTS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/customer/current-guests",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"customer",
+								"current-guests"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
