@@ -51,7 +51,7 @@ var DB *gorm.DB
 // Connect initializes the database connection
 func Connect() {
 	// dsn := "user=a password=postgres host=a port=1234 dbname=s sslmode=disable"
-	connStr := "user=rommellagurin password=postgres host=localhost port=5432 dbname=san_juan_businesses sslmode=disable TimeZone=Asia/Manila"
+	connStr := "user=rommel password=boslagu host=postgresql-rommel.alwaysdata.net port=5432 dbname=rommel_company sslmode=disable TimeZone=Asia/Manila"
 	var err error
 	// Get the current time
 	now := time.Now()              // Get the timezone name and offset
