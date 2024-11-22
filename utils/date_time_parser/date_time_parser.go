@@ -9,6 +9,7 @@ import (
 const (
 	myFormat         = "2006-01-02T15:04:05+08:00"
 	alternativFormat = "2006-01-02T15:04:05+08"
+	tz               = "Asia/Manila"
 )
 
 func ParseStringToTime(timeString string) (*time.Time, error) {
@@ -19,11 +20,30 @@ func ParseStringToTime(timeString string) (*time.Time, error) {
 	if err != nil {
 		parsedAlternativeTime, err := time.Parse(alternativFormat, timeString)
 		if err != nil {
-			return nil, err
+			return forceParsing(timeString)
 		}
 		return &parsedAlternativeTime, nil
 	}
 	return &parsedTime, nil
+}
+
+func forceParsing(timestampUTC string) (*time.Time, error) {
+
+	// Parse the timestamp in UTC
+	parsedTime, err := time.Parse(time.RFC3339, timestampUTC)
+	if err != nil {
+		return nil, err
+	}
+
+	location, err := time.LoadLocation(tz)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert the parsed time to the desired timezone
+	localTime := parsedTime.In(location)
+
+	return &localTime, nil
 }
 
 func DateTimeFormatter(timestamp time.Time) string {
@@ -42,7 +62,7 @@ func ParseStringToTimeV2(timeString string) (*time.Time, error) {
 	}
 
 	// Load the desired timezone (e.g., UTC+08:00)
-	loc, err := time.LoadLocation("Asia/Manila")
+	loc, err := time.LoadLocation(tz)
 	if err != nil {
 		fmt.Println("Error loading location:", err)
 	}
@@ -67,7 +87,7 @@ func ParseStringToTimeV2(timeString string) (*time.Time, error) {
 }
 
 func GetTimeInLocation() (time.Time, error) {
-	location, err := time.LoadLocation("Asia/Manila")
+	location, err := time.LoadLocation(tz)
 	if err != nil {
 		return time.Time{}, err
 	}
