@@ -22,7 +22,10 @@ import (
 	time_parser "company/utils/date_time_parser"
 
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
+
+const commonErrorMessage = "Database Error"
 
 func generateDefaultUsername(firstname string, middlename string, lastname string, timestamp string) string {
 	time, err := time_parser.ParseStringToTime(timestamp)
@@ -63,6 +66,14 @@ func generateDefaultPin(timestamp string) (string, int) {
 	return hex.EncodeToString(encText), defaultPin
 }
 
+func dbErrResponse(c *fiber.Ctx, result *gorm.DB, response any) error {
+	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+		"error":       commonErrorMessage,
+		"actualError": result.Error.Error(),
+		"data":        response,
+	})
+}
+
 func EncodeUser(c *fiber.Ctx) error {
 	var user user_auth.PendingUser
 
@@ -97,11 +108,7 @@ func EncodeUser(c *fiber.Ctx) error {
 
 	result := db.DB.Raw(fullQuery).Scan(&response)
 	if result.Error != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error":       "Database Error",
-			"actualError": result.Error.Error(),
-			"data":        response,
-		})
+		return dbErrResponse(c, result, response)
 	}
 
 	if response.Status != 200 {
@@ -113,7 +120,7 @@ func EncodeUser(c *fiber.Ctx) error {
 
 	smtp := *systemparameter.GetSystemParameter("SMTP")
 	service := *systemparameter.GetSystemParameter("SERVICE")
-	url := fmt.Sprintf("%s/verification/verify", service[0].ParameterValue)
+	url := fmt.Sprintf("%s/user/verification/verify", service[0].ParameterValue)
 	body := fmt.Sprintf("Dear %s,\n\nThis is the final step for your registration to the Company! The details below contains your temporary credentials, please don't let anyone know this details.\n\nUsername: %s\nPassword: %s\nPin: %d\n\nPlease use the credentials here %s", user.LastName, user.Username, txtFormatPassword, intFormatPin, url)
 	subject := "Account Verification"
 	to := user.Email
@@ -147,11 +154,7 @@ func Register(c *fiber.Ctx) error {
 
 	result := db.DB.Raw(pendingUserQuery).Scan(&pendingUserQueryResponse)
 	if result.Error != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error":       "Database Error",
-			"actualError": result.Error.Error(),
-			"data":        pendingUserQueryResponse,
-		})
+		return dbErrResponse(c, result, pendingUserQueryResponse)
 	}
 	fmt.Println("pendingUserQueryResponse.DateEncoded: ", pendingUserQueryResponse.DateEncoded)
 
@@ -197,11 +200,7 @@ func Register(c *fiber.Ctx) error {
 		fmt.Println(registerVerifiedQuery)
 		result := db.DB.Raw(registerVerifiedQuery).Scan(&registerVerifiedQueryResponse)
 		if result.Error != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error":       "Database Error",
-				"actualError": result.Error.Error(),
-				"data":        pendingUserQueryResponse,
-			})
+			return dbErrResponse(c, result, pendingUserQueryResponse)
 		}
 
 		fmt.Println("CHECK: ", registerVerifiedQueryResponse)
