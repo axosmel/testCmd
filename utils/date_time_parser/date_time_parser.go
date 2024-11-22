@@ -6,16 +6,22 @@ import (
 	"time"
 )
 
-const myFormat = "2006-01-02T15:04:05+08:00"
+const (
+	myFormat         = "2006-01-02T15:04:05+08:00"
+	alternativFormat = "2006-01-02T15:04:05+08"
+)
 
 func ParseStringToTime(timeString string) (*time.Time, error) {
 	fmt.Println("timeString: ", timeString)
-	layout := myFormat
 
 	// Convert the string to time.Time
-	parsedTime, err := time.Parse(layout, timeString)
+	parsedTime, err := time.Parse(myFormat, timeString)
 	if err != nil {
-		return nil, err
+		parsedAlternativeTime, err := time.Parse(alternativFormat, timeString)
+		if err != nil {
+			return nil, err
+		}
+		return &parsedAlternativeTime, nil
 	}
 	return &parsedTime, nil
 }
