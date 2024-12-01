@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"roleId\": 1,\n    \"firstname\": \"ROMMEL\",\n    \"middlename\": \"MANGUNDAYAO\",\n    \"lastname\": \"LAGURIN\",\n    \"sex\": \"MALE\",\n    \"companyId\": 1,\n    \"birthdate\": \"1994-10-22\",\n    \"email\": \"m.rommellagurin@gmail.com\"\n}",
+							"raw": "{\n    \"roleId\": 1,\n    \"firstname\": \"ROMMEL\",\n    \"middlename\": \"MANGUNDAYAO\",\n    \"lastname\": \"LAGURIN\",\n    \"sex\": \"MALE\",\n    \"companyId\": 1,\n    \"birthdate\": \"1994-10-22\",\n    \"email\": \"rlagurin.bos@gmail.com\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -24,11 +24,10 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/pending/encode",
+							"raw": "{{host}}/pending/encode",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"pending",
 								"encode"
@@ -44,7 +43,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"rmlagurisn@gmail.com\",\n    \"username\": \"LM7LAGURIN14\",\n    \"password\": \"LAGURIN@1994-10-22\",\n    \"pin\": \"428360\",\n    \"newUsername\": \"mel\",\n    \"newPassword\": \"myPassword\",\n    \"newPIN\": \"102294\"\n}\n",
+							"raw": "{\n    \"email\": \"m.rommellagurin@gmail.com\",\n    \"username\": \"RM18LAGURIN15\",\n    \"password\": \"LAGURIN@1994-10-22\",\n    \"pin\": \"780012\",\n    \"newUsername\": \"lemem199x\",\n    \"newPassword\": \"memel\",\n    \"newPIN\": \"112233\"\n}\n\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -52,11 +51,10 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/pending/signUp",
+							"raw": "{{host}}/pending/signUp",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"pending",
 								"signUp"
@@ -80,11 +78,10 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/auth/signIn",
+							"raw": "{{host}}/auth/signIn",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"auth",
 								"signIn"
@@ -108,11 +105,10 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/user/update/profile",
+							"raw": "{{host}}/user/update/profile",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"user",
 								"update",
@@ -161,11 +157,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3000/system-params/features",
+							"raw": "{{host}}/system-params/features",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"system-params",
 								"features"
@@ -180,11 +175,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3000/system-params/roles",
+							"raw": "{{host}}/system-params/roles",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"system-params",
 								"roles"
@@ -199,11 +193,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3000/system-params/companies",
+							"raw": "{{host}}/system-params/companies",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"system-params",
 								"companies"
@@ -220,39 +213,30 @@
 				{
 					"name": "CHECKOUT",
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"companyId\": 1,\n    \"checkinId\": 1,\n    \"visitorFirstname\": \"gafddsas\",\n    \"visitorMiddlename\": \"agfsd\",\n    \"visitorLastname\": \"afsd\",\n    \"city\": \"agads asfd\",\n    \"province\": \"ghrae\",\n    \"adultMaleCount\": 2,\n    \"adultFemaleCount\": 3,\n    \"kidsMaleCount\": 5,\n    \"kidsFemaleCount\": 2,\n    \"visitType\": \"overnight\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "localhost:3000/customer/check-out",
+							"raw": "{{host}}/customer/check-out/1",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"customer",
-								"check-out"
+								"check-out",
+								"1"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "CHECKIN",
+					"name": "CHECKIN REQUEST",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"companyId\": 1,\n    \"visitorFirstname\": \"gafddsas\",\n    \"visitorMiddlename\": \"agfsd\",\n    \"visitorLastname\": \"afsd\",\n    \"city\": \"agads asfd\",\n    \"province\": \"ghrae\",\n    \"adultMaleCount\": 2,\n    \"adultFemaleCount\": 3,\n    \"kidsMaleCount\": 5,\n    \"kidsFemaleCount\": 2,\n    \"visitType\": \"overnight\"\n}",
+							"raw": "{\n    \"companyId\": 1,\n    \"visitorFirstname\": \"gafddsasg\",\n    \"visitorMiddlename\": \"agdfsd\",\n    \"visitorLastname\": \"afsd\",\n    \"city\": \"agads asfd\",\n    \"province\": \"ghrae\",\n    \"adultMaleCount\": 2,\n    \"adultFemaleCount\": 3,\n    \"kidsMaleCount\": 5,\n    \"kidsFemaleCount\": 2,\n    \"visitType\": \"overnight\",\n    \"environmentalFee\": 20.00\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -260,14 +244,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/customer/check-in",
+							"raw": "{{host}}/customer/check-in-request",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"customer",
-								"check-in"
+								"check-in-request"
 							]
 						}
 					},
@@ -279,14 +262,52 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3000/customer/current-guests",
+							"raw": "{{host}}/customer/current-guests/1",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "3000",
 							"path": [
 								"customer",
-								"current-guests"
+								"current-guests",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PENDING GUESTS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/customer/pending-guests/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"customer",
+								"pending-guests",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PREVIOUS GUESTS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/customer/current-guests/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"customer",
+								"current-guests",
+								"1"
 							]
 						}
 					},

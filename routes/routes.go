@@ -117,9 +117,12 @@ func pendingEndpoints(pendingPath fiber.Router) {
 
 // PENDING ENDPOINTS
 func checkInEndpoints(pendingPath fiber.Router) {
-	pendingPath.Post("/check-in", checkin.CheckIn)
-	pendingPath.Post("/check-out", checkin.CheckOut)
-	pendingPath.Get("/current-guests", checkin.GetCurrentGuests)
+	pendingPath.Post("/check-in-request", checkin.CheckInRequest)
+	pendingPath.Put("/accept-check-in/:checkinId", checkin.AccpetCheckIn)
+	pendingPath.Put("/check-out/:checkinId", checkin.CheckOut)
+	pendingPath.Get("/pending-guests/:companyId", checkin.GetPendingGuests)
+	pendingPath.Get("/current-guests/:companyId", checkin.GetCurrentGuests)
+	pendingPath.Get("/previous-guests/:companyId/:date", checkin.GetPreviousGuests)
 }
 
 // ONESIGNAL ENDPOINTS
