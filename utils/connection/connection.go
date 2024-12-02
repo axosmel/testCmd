@@ -41,6 +41,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -103,4 +104,24 @@ func Close() {
 	if err := sqlDB.Close(); err != nil {
 		log.Fatal("Error closing the database connection:", err)
 	}
+}
+
+func RestoreDatabase( /*user, password, host, port, dbName, filePath string*/ ) error {
+	// Construct the psql restore command
+	// cmd := exec.Command("psql", "-U", user, "-h", host, "-p", port, "-d", dbName, "-f", filePath)
+
+	// // Set the environment variable for the password
+	// cmd.Env = append(os.Environ(), fmt.Sprintf("PGPASSWORD=%s", password))
+
+	// // Run the command and capture the output
+
+	cmd := exec.Command("pwd")
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("failed to restore database: %v\nOutput: %s", err, string(output))
+	}
+
+	fmt.Printf("Database restored successfully. Output: %s\n", string(output))
+
+	return nil
 }

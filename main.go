@@ -35,13 +35,13 @@ func reverseString(s string) string {
 }
 func main() {
 
-	db.Connect()
-	defer db.Close() // Ensure the connection is closed when done
-
+	// db.Connect()
+	// defer db.Close() // Ensure the connection is closed when done
+	db.RestoreDatabase()
 	// Example query
-	var greeting string
-	result := db.DB.Raw("SET TIMEZONE = 'Asia/Manila'").Scan(&greeting)
-	ckErr.ErrorChecker(result.Error)
+	// var greeting string
+	// result := db.DB.Raw("SET TIMEZONE = 'Asia/Manila'").Scan(&greeting)
+	// ckErr.ErrorChecker(result.Error)
 
 	encText, err := encrypt.Encrypt([]byte("Hello from GoLang"), time.Now())
 	ckErr.ErrorChecker(err)
